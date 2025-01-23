@@ -1,0 +1,39 @@
+# DB designing
+	# Product
+		- name - CharField
+		- price - FloatField
+		- stock - IntegerField
+		- type_id - (ProductType, OneToMany) 
+		- department_id - (Department, ManyToMany)
+		- description - TextField
+
+	# Department
+		- name - CharField
+		- description - TextField
+	
+
+	# ProductType
+		- name - CharField
+
+	# Purchase
+		- price - FloatField
+		- quantity - IntegerField
+		- product_id - (Product,OneToMany)
+		- vendor_id - (Vendor,OneToMany)
+		- user_id - (User,OneToMany)
+        - purchase_date - DateTimeField
+
+	# Sell
+		- price - FloatField
+		- quantity - IntegerField
+		- poduct_id - (Product, OneToMany)
+		- customer_name - CharField
+		- user_id - (User,OneToMany)
+        - sale_date - DateTimeField
+
+	# Vendor
+		- name - CharField
+		- description - TextField
+		- address - CharField
+		- contact_no - CharField
+		- email - EmailField

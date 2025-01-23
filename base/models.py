@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
@@ -48,6 +49,10 @@ class Purchase(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    purchase_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Purchase of {self.product.name} by {self.vendor.name}"
 
 
 class Sell(models.Model):
@@ -56,3 +61,7 @@ class Sell(models.Model):
     Product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sale_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Sale of {self.product.name} to {self.customer_name}"
