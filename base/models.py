@@ -52,7 +52,7 @@ class Purchase(models.Model):
     purchase_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Purchase of {self.product.name} by {self.vendor.name}"
+        return f"Purchase of {self.product.name} from {self.vendor.name}"
 
 
 class Sell(models.Model):
@@ -64,4 +64,4 @@ class Sell(models.Model):
     sale_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Sale of {self.product.name} to {self.customer_name}"
+        return f"Sale of {self.Product.name} to {self.customer_name}"
