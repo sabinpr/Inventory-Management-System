@@ -143,8 +143,10 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        user = request.data.get('user')
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy()
+        data["user"] = request.user.id
+
+        serializer = self.get_serializer(data=data)
 
         if serializer.is_valid():
             serializer.save()

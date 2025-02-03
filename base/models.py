@@ -56,8 +56,8 @@ class Product(models.Model):
 class Purchase(models.Model):
     price = models.FloatField()
     quantity = models.IntegerField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     purchase_date = models.DateTimeField(auto_now_add=True)
 
