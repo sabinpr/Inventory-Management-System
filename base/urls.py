@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet, ProductTypeViewSet, DepartmentViewSet, VendorViewSet, PurchaseViewSet, SellViewSet
+from .views import ProductViewSet, ProductTypeViewSet, DepartmentViewSet, VendorViewSet, PurchaseViewSet, SellViewSet, register_api_view, login_api_view
 
 router = DefaultRouter()
 router.register('product-types', ProductTypeViewSet)
@@ -35,5 +35,7 @@ urlpatterns = [
     path('vendor/',
          VendorViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('vendor/<int:pk>/',
-         VendorViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}))
+         VendorViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})),
+    path('register/', register_api_view),
+    path('login/', login_api_view)
 ]
