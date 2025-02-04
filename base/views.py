@@ -137,11 +137,6 @@ class PurchaseViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated,
                           permissions.DjangoModelPermissions]
 
-    def list(self, request):
-        purchase_objs = self.get_queryset()
-        serializer = self.get_serializer(purchase_objs, many=True)
-        return Response(serializer.data)
-
     def create(self, request):
         data = request.data.copy()
         data["user"] = request.user.id
@@ -153,37 +148,6 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, pk):
-        purchase_obj = self.get_object()
-        serializer = self.get_serializer(purchase_obj)
-        return Response(serializer.data)
-
-    def update(self, request, pk):
-        purchase_obj = self.get_object()
-        serializer = self.get_serializer(purchase_obj, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def partial_update(self, request, pk):
-        purchase_obj = self.get_object()
-        serializer = self.get_serializer(
-            purchase_obj, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk):
-        purchase_obj = self.get_object()
-        purchase_obj.delete()
-        return Response()
 
 
 class SellViewSet(viewsets.ModelViewSet):
