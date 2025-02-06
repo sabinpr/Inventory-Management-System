@@ -1,17 +1,17 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet, ProductTypeViewSet, DepartmentViewSet, VendorViewSet, PurchaseViewSet, SellViewSet, register_api_view, login_api_view
+# from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet, ProductTypeViewSet, DepartmentViewSet, VendorViewSet, PurchaseViewSet, SellViewSet, group_api_view, register_api_view, login_api_view
 
-router = DefaultRouter()
-router.register('product-types', ProductTypeViewSet)
-router.register('departments', DepartmentViewSet)
-router.register('vendors', VendorViewSet)
-router.register('products', ProductViewSet)
-router.register('purchases', PurchaseViewSet)
-router.register('sells', SellViewSet)
+# router = DefaultRouter()
+# router.register('product-types', ProductTypeViewSet)
+# router.register('departments', DepartmentViewSet)
+# router.register('vendors', VendorViewSet)
+# router.register('products', ProductViewSet)
+# router.register('purchases', PurchaseViewSet)
+# router.register('sells', SellViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    #     path('api/', include(router.urls)),
     path('product/',
          ProductViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('product/<int:pk>/',
@@ -37,5 +37,6 @@ urlpatterns = [
     path('vendor/<int:pk>/',
          VendorViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})),
     path('register/', register_api_view),
-    path('login/', login_api_view)
+    path('login/', login_api_view),
+    path('group/', group_api_view)
 ]

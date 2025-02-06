@@ -56,13 +56,14 @@ class Product(models.Model):
 class Purchase(models.Model):
     price = models.FloatField()
     quantity = models.IntegerField()
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(
+        Vendor, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     purchase_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Purchase of {self.product.name} from {self.vendor.name}"
+        return f"Purchase of {self.product.name}"  # from {self.vendor.name}"
 
 
 class Sell(models.Model):
