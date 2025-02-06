@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
 # Create your views here.88
 
 
@@ -137,7 +136,8 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             try:
                 send_mail(
                     subject=f'Purchase Confirmation:',
-                    message=f'Succesfully Purchased.',
+                    message=f'''Succesfully Purchased by {
+                        request.user.email}.''',
                     from_email=None,
                     recipient_list=['sabinprajapati7@gmail.com'],
                     fail_silently=False
