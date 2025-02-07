@@ -132,12 +132,14 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
         context = {}
         if serializer.is_valid():
-            serializer.save()
+            purchase_obj = serializer.save()
+            product_name = purchase_obj.product.name
+            email = request.user.email
             try:
                 send_mail(
                     subject=f'Purchase Confirmation:',
-                    message=f'''Succesfully Purchased by {
-                        request.user.email}.''',
+                    message=f'''Succesfully Purchased of {
+                        product_name} by {email} .''',
                     from_email=None,
                     recipient_list=['sabinprajapati7@gmail.com'],
                     fail_silently=False
