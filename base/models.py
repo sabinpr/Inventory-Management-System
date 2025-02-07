@@ -10,6 +10,8 @@ class User(AbstractUser):
     image = models.FileField(upload_to='media/user/')
     groups = models.ForeignKey(
         Group, on_delete=models.SET_NULL, null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

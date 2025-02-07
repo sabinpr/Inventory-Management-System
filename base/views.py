@@ -1,13 +1,17 @@
 from rest_framework import viewsets, permissions, status
 from .models import Product, ProductType, Department, Vendor, Purchase, Sell, User
-from .serializers import ProductSerializer, ProductTypeSerializer, DepartmentSerializer, VendorSerializer, PurchaseSerializer, SellSerializer, UserSerializer, GroupSerializer
+from .serializers import ProductSerializer, ProductTypeSerializer, DepartmentSerializer, VendorSerializer, PurchaseSerializer, SellSerializer, UserSerializer, GroupSerializer, OtpVerifySerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 # Create your views here.88
 
 
@@ -135,13 +139,18 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             purchase_obj = serializer.save()
             product_name = purchase_obj.product.name
             email = request.user.email
+            from_email = os.getenv('EMAIL_HOST_USER')
+            management_user = User.objects.filter(groups__name='Management')
+            management_user_email = []
+            for m_u in management_user:
+                management_user_email.append(m_u.email)
             try:
                 send_mail(
                     subject=f'Purchase Confirmation:',
                     message=f'''Succesfully Purchased of {
                         product_name} by {email} .''',
-                    from_email=None,
-                    recipient_list=['sabinprajapati7@gmail.com'],
+                    from_email=from_email,
+                    recipient_list=management_user_email,
                     fail_silently=False
                 )
                 context['result'] = 'Email sent successfully'
@@ -159,19 +168,19 @@ class SellViewSet(viewsets.ModelViewSet):
     #   permissions.DjangoModelPermissions]
 
 
-@ api_view(['POST'])
-@ permission_classes([permissions.IsAuthenticated])
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
 def register_api_view(request):
     if request.user.groups.name == 'Management':
-        password = request.data.get('password')
-        hash_password = make_password(password)
-        data = request.data.copy()
-        data['password'] = hash_password
-
-        serializer = UserSerializer(data=data)
+        # password = request.data.get('password')
+        # hash_password = make_password(password)
+        # data = request.data.copy()
+        # data['password'] = hash_password
+        # print(hash_password)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"message": "User Created!! Check the email for OTP"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -179,11 +188,13 @@ def register_api_view(request):
         return Response({'detail': 'You do not have permissions'}, status=status.HTTP_403_FORBIDDEN)
 
 
-@ api_view(['POST'])
-@ permission_classes([])
+@api_view(['POST'])
+@permission_classes([])
 def login_api_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
+    # user = User.objects.filter(email=email).first()
+    # print(check_password(password, user.password))
 
     user = authenticate(username=email, password=password)
 
@@ -195,10 +206,19 @@ def login_api_view(request):
     return Response(token.key)
 
 
-@ api_view(['GET'])
-@ permission_classes([])
+@api_view(['GET'])
+@permission_classes([])
 def group_api_view(request):
     group_objs = Group.objects.all()
     serializer = GroupSerializer(group_objs, many=True)
 
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def otp_verify_api_view(request):
+    serializer = OtpVerifySerializer(data=request.data)
+    if serializer.is_valid():
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
