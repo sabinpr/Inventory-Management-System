@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from dotenv import load_dotenv
 import os
+import random
 
 load_dotenv()
 # Create your views here.88
@@ -118,6 +119,8 @@ class DepartmentViewSet(viewsets.GenericViewSet):
 class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+    filterest_fields = ['type', 'department']
+    search_fields = ['name', 'description']
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -179,7 +182,17 @@ def register_api_view(request):
         # print(hash_password)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
+            # otp = random.randint(10000, 99999)
+            # send_mail(
+            #     subject="Your otp code",
+            #     message=f"Your otp code is {otp}",
+            #     from_email=os.getenv('EMAIL_HOST_USER'),
+            #     recipient_list=[request.data.get('email')],
+            # )
+            # user =
             serializer.save()
+            # user.otp = otp
+            # user.save()
             return Response({"message": "User Created!! Check the email for OTP"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -218,6 +231,15 @@ def group_api_view(request):
 @api_view(['POST'])
 @permission_classes([])
 def otp_verify_api_view(request):
+    # Alternate Method:
+
+    # otp = request.data.get('otp')
+    # try:
+    #     user = User.objects.get('otp')
+    # except:
+    #     return Response({'detail': 'Invalid OTP'})
+    # user.is_active = True
+    # user.save()
     serializer = OtpVerifySerializer(data=request.data)
     if serializer.is_valid():
         return Response(serializer.validated_data, status=status.HTTP_200_OK)

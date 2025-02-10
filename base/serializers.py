@@ -81,7 +81,7 @@ class OtpVerifySerializer(serializers.Serializer):
             email=data['email'], otp=data['otp']).first()
 
         if not user:
-            raise serializers.ValidationError("Invalid OTP or email")
+            raise serializers.ValidationError("Invalid OTP or Email")
         user.is_active = True
         user.otp = None
         user.save()
